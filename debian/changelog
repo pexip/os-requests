@@ -1,0 +1,43 @@
+requests (0.8.2-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/watch
+    - Removed "debian uupdate" options
+  * debian/{copyright,README.source}
+    - Updated to reflect upstream changes: switched from poster to
+      urllib3
+    - Added a stanza about the embedded modified copy of the
+      standard module Cookie
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 25 Nov 2011 00:02:28 +0100
+
+requests (0.6.4-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/control
+    - Dropped python-eventlet from Depends field because it's not used
+      anymore
+    - Moved python-gevent from Depends field to Recommends field so
+      python-requests can be installed also in ia64 and sparc
+
+ -- Daniele Tricoli <eriol@mornie.org>  Wed, 19 Oct 2011 20:49:39 +0200
+
+requests (0.6.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Daniele Tricoli <eriol@mornie.org>  Tue, 23 Aug 2011 02:00:41 +0200
+
+requests (0.5.0-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/control
+    - Updated description to mention proxy support
+
+ -- Daniele Tricoli <eriol@mornie.org>  Sun, 26 Jun 2011 07:12:03 +0200
+
+requests (0.4.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #629370)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Mon, 06 Jun 2011 02:11:15 +0200
