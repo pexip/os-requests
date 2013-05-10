@@ -1,64 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+"""Tests for Requests."""
 
-import time
+from __future__ import division
+import json
 import os
 import unittest
+import pickle
 
 import requests
-import envoy
-from requests import HTTPError
+from requests.auth import HTTPDigestAuth
+from requests.compat import str
 
 try:
-    import omnijson as json
+    import StringIO
 except ImportError:
-    import json
+    import io as StringIO
 
-
-# TODO: Detect an open port.
-PORT = os.environ.get('HTTPBIN_PORT', '7077')
-
-HTTPBIN_URL = 'http://0.0.0.0:%s/' % (PORT)
-# HTTPBIN_URL = 'http://127.0.0.1:8000/'
+HTTPBIN = os.environ.get('HTTPBIN_URL', 'http://httpbin.org/')
 
 
 def httpbin(*suffix):
     """Returns url for HTTPBIN resource."""
+    return HTTPBIN + '/'.join(suffix)
 
-    return HTTPBIN_URL + '/'.join(suffix)
 
+class RequestsTestCase(unittest.TestCase):
 
-SERVICES = (httpbin, )
-
-_httpbin = False
-
-class RequestsTestSuite(unittest.TestCase):
-    """Requests test cases."""
-
-    # It goes to eleven.
     _multiprocess_can_split_ = True
 
     def setUp(self):
-
-        global _httpbin
-
-        if not _httpbin:
-
-            c = envoy.connect('gunicorn httpbin:app --bind=0.0.0.0:%s' % (PORT))
-
-            self.httpbin = c
-            _httpbin = True
-            time.sleep(1)
-
-
+        """Create simple data set with headers."""
+        pass
 
     def tearDown(self):
         """Teardown."""
-        # self.httpbin.kill()
         pass
-
 
     def test_entry_points(self):
 
@@ -71,32 +49,62 @@ class RequestsTestSuite(unittest.TestCase):
         requests.patch
         requests.post
 
-
-
     def test_invalid_url(self):
         self.assertRaises(ValueError, requests.get, 'hiwpefhipowhefopw')
 
-    def test_HTTP_200_OK_GET(self):
-        r = requests.get(httpbin('/get'))
+    def test_basic_building(self):
+        req = requests.Request()
+        req.url = 'http://kennethreitz.org/'
+        req.data = {'life': '42'}
+
+        pr = req.prepare()
+        assert pr.url == req.url
+        assert pr.body == 'life=42'
+
+    def test_no_content_length(self):
+        get_req = requests.Request('GET', httpbin('get')).prepare()
+        self.assertTrue('Content-Length' not in get_req.headers)
+        head_req = requests.Request('HEAD', httpbin('head')).prepare()
+        self.assertTrue('Content-Length' not in head_req.headers)
+
+    def test_path_is_not_double_encoded(self):
+        request = requests.Request('GET', "http://0.0.0.0/get/test case").prepare()
+
+        self.assertEqual(request.path_url, "/get/test%20case")
+
+    def test_params_are_added_before_fragment(self):
+        request = requests.Request('GET',
+            "http://example.com/path#fragment", params={"a": "b"}).prepare()
+        self.assertEqual(request.url,
+            "http://example.com/path?a=b#fragment")
+        request = requests.Request('GET',
+            "http://example.com/path?key=value#fragment", params={"a": "b"}).prepare()
+        self.assertEqual(request.url,
+            "http://example.com/path?key=value&a=b#fragment")
+
+    def test_HTTP_200_OK_GET_ALTERNATIVE(self):
+        r = requests.Request('GET', httpbin('get'))
+        s = requests.Session()
+
+        r = s.send(r.prepare())
+
         self.assertEqual(r.status_code, 200)
 
     def test_HTTP_302_ALLOW_REDIRECT_GET(self):
         r = requests.get(httpbin('redirect', '1'))
         self.assertEqual(r.status_code, 200)
 
-    def test_HTTP_302_GET(self):
-        r = requests.get(httpbin('redirect', '1'), allow_redirects=False)
-        self.assertEqual(r.status_code, 302)
-
+    # def test_HTTP_302_ALLOW_REDIRECT_POST(self):
+    #     r = requests.post(httpbin('status', '302'), data={'some': 'data'})
+    #     self.assertEqual(r.status_code, 200)
 
     def test_HTTP_200_OK_GET_WITH_PARAMS(self):
         heads = {'User-agent': 'Mozilla/5.0'}
 
         r = requests.get(httpbin('user-agent'), headers=heads)
 
-        assert heads['User-agent'] in r.content
+        self.assertTrue(heads['User-agent'] in r.text)
         self.assertEqual(r.status_code, 200)
-
 
     def test_HTTP_200_OK_GET_WITH_MIXED_PARAMS(self):
         heads = {'User-agent': 'Mozilla/5.0'}
@@ -104,454 +112,292 @@ class RequestsTestSuite(unittest.TestCase):
         r = requests.get(httpbin('get') + '?test=true', params={'q': 'test'}, headers=heads)
         self.assertEqual(r.status_code, 200)
 
+    def test_set_cookie_on_301(self):
+        s = requests.session()
+        url = httpbin('cookies/set?foo=bar')
+        r = s.get(url)
+        self.assertTrue(s.cookies['foo'] == 'bar')
+
+    def test_cookie_sent_on_redirect(self):
+        s = requests.session()
+        s.get(httpbin('cookies/set?foo=bar'))
+        r = s.get(httpbin('redirect/1'))  # redirects to httpbin('get')
+        self.assertTrue("Cookie" in r.json()["headers"])
 
     def test_user_agent_transfers(self):
-        """Issue XX"""
 
         heads = {
-            'User-agent':
-                'Mozilla/5.0 (github.com/kennethreitz/requests)'
+            'User-agent': 'Mozilla/5.0 (github.com/kennethreitz/requests)'
         }
 
-        r = requests.get(httpbin('user-agent'), headers=heads);
-        self.assertTrue(heads['User-agent'] in r.content)
+        r = requests.get(httpbin('user-agent'), headers=heads)
+        self.assertTrue(heads['User-agent'] in r.text)
 
         heads = {
-            'user-agent':
-                'Mozilla/5.0 (github.com/kennethreitz/requests)'
+            'user-agent': 'Mozilla/5.0 (github.com/kennethreitz/requests)'
         }
 
-        r = requests.get(httpbin('user-agent'), headers=heads);
-        self.assertTrue(heads['user-agent'] in r.content)
-
+        r = requests.get(httpbin('user-agent'), headers=heads)
+        self.assertTrue(heads['user-agent'] in r.text)
 
     def test_HTTP_200_OK_HEAD(self):
-        r = requests.head(httpbin('/get'))
+        r = requests.head(httpbin('get'))
         self.assertEqual(r.status_code, 200)
-
 
     def test_HTTP_200_OK_PUT(self):
         r = requests.put(httpbin('put'))
         self.assertEqual(r.status_code, 200)
 
+    def test_BASICAUTH_TUPLE_HTTP_200_OK_GET(self):
+        auth = ('user', 'pass')
+        url = httpbin('basic-auth', 'user', 'pass')
 
-    def test_HTTP_200_OK_PATCH(self):
-        r = requests.patch(httpbin('patch'))
+        r = requests.get(url, auth=auth)
         self.assertEqual(r.status_code, 200)
 
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 401)
 
-    def test_BASICAUTH_HTTP_200_OK_GET(self):
+        s = requests.session()
+        s.auth = auth
+        r = s.get(url)
+        self.assertEqual(r.status_code, 200)
 
-        for service in SERVICES:
+    def test_DIGEST_HTTP_200_OK_GET(self):
 
-            auth = ('user', 'pass')
-            url = service('basic-auth', 'user', 'pass')
+        auth = HTTPDigestAuth('user', 'pass')
+        url = httpbin('digest-auth', 'auth', 'user', 'pass')
 
-            r = requests.get(url, auth=auth)
-            self.assertEqual(r.status_code, 200)
+        r = requests.get(url, auth=auth)
+        self.assertEqual(r.status_code, 200)
 
-            r = requests.get(url)
-            self.assertEqual(r.status_code, 401)
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 401)
 
+        s = requests.session()
+        s.auth = auth
+        r = s.get(url)
+        self.assertEqual(r.status_code, 200)
 
-            s = requests.session(auth=auth)
-            r = s.get(url)
-            self.assertEqual(r.status_code, 200)
+    def test_DIGEST_STREAM(self):
 
+        auth = HTTPDigestAuth('user', 'pass')
+        url = httpbin('digest-auth', 'auth', 'user', 'pass')
 
-    def test_DIGESTAUTH_HTTP_200_OK_GET(self):
+        r = requests.get(url, auth=auth, stream=True)
+        self.assertNotEqual(r.raw.read(), b'')
 
-        for service in SERVICES:
-
-            auth = ('digest', 'user', 'pass')
-            url = service('digest-auth', 'auth', 'user', 'pass')
-
-            r = requests.get(url, auth=auth)
-            self.assertEqual(r.status_code, 200)
-
-            r = requests.get(url)
-            self.assertEqual(r.status_code, 401)
+        r = requests.get(url, auth=auth, stream=False)
+        self.assertEqual(r.raw.read(), b'')
 
 
-            s = requests.session(auth=auth)
-            r = s.get(url)
-            self.assertEqual(r.status_code, 200)
+    def test_DIGESTAUTH_WRONG_HTTP_401_GET(self):
+
+        auth = HTTPDigestAuth('user', 'wrongpass')
+        url = httpbin('digest-auth', 'auth', 'user', 'pass')
+
+        r = requests.get(url, auth=auth)
+        self.assertEqual(r.status_code, 401)
+
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 401)
+
+        s = requests.session()
+        s.auth = auth
+        r = s.get(url)
+        self.assertEqual(r.status_code, 401)
 
     def test_POSTBIN_GET_POST_FILES(self):
 
-        for service in SERVICES:
+        url = httpbin('post')
+        post1 = requests.post(url).raise_for_status()
 
-            url = service('post')
-            post = requests.post(url).raise_for_status()
+        post1 = requests.post(url, data={'some': 'data'})
+        self.assertEqual(post1.status_code, 200)
 
-            post = requests.post(url, data={'some': 'data'})
-            self.assertEqual(post.status_code, 200)
+        with open('requirements.txt') as f:
+            post2 = requests.post(url, files={'some': f})
+        self.assertEqual(post2.status_code, 200)
 
-            post2 = requests.post(url, files={'some': open('test_requests.py')})
-            self.assertEqual(post2.status_code, 200)
+        post4 = requests.post(url, data='[{"some": "json"}]')
+        self.assertEqual(post4.status_code, 200)
 
-            post3 = requests.post(url, data='[{"some": "json"}]')
-            self.assertEqual(post3.status_code, 200)
+        try:
+            requests.post(url, files=['bad file data'])
+        except ValueError:
+            pass
 
+    def test_POSTBIN_GET_POST_FILES_WITH_DATA(self):
 
-    def test_POSTBIN_GET_POST_FILES_WITH_PARAMS(self):
+        url = httpbin('post')
+        post1 = requests.post(url).raise_for_status()
 
-        for service in SERVICES:
+        post1 = requests.post(url, data={'some': 'data'})
+        self.assertEqual(post1.status_code, 200)
 
-            url = service('post')
-            post = requests.post(url,
-                files={'some': open('test_requests.py')},
-                data={'some': 'data'})
+        with open('requirements.txt') as f:
+            post2 = requests.post(url, data={'some': 'data'}, files={'some': f})
+        self.assertEqual(post2.status_code, 200)
 
-            self.assertEqual(post.status_code, 200)
+        post4 = requests.post(url, data='[{"some": "json"}]')
+        self.assertEqual(post4.status_code, 200)
 
-
-    def test_POSTBIN_GET_POST_FILES_WITH_HEADERS(self):
-
-        for service in SERVICES:
-
-            url = service('post')
-
-            post2 = requests.post(url,
-                files={'some': open('test_requests.py')},
-                headers = {'User-Agent': 'requests-tests'})
-
-            self.assertEqual(post2.status_code, 200)
-
-
-    def test_nonzero_evaluation(self):
-
-        for service in SERVICES:
-
-            r = requests.get(service('status', '500'))
-            self.assertEqual(bool(r), False)
-
-            r = requests.get(service('/get'))
-            self.assertEqual(bool(r), True)
-
+        try:
+            requests.post(url, files=['bad file data'])
+        except ValueError:
+            pass
 
     def test_request_ok_set(self):
-
-        for service in SERVICES:
-
-            r = requests.get(service('status', '404'))
-            # print r.status_code
-            # r.raise_for_status()
-            self.assertEqual(r.ok, False)
-
+        r = requests.get(httpbin('status', '404'))
+        self.assertEqual(r.ok, False)
 
     def test_status_raising(self):
         r = requests.get(httpbin('status', '404'))
-        self.assertRaises(HTTPError, r.raise_for_status)
+        self.assertRaises(requests.exceptions.HTTPError, r.raise_for_status)
 
-        r = requests.get(httpbin('status', '200'))
-        self.assertFalse(r.error)
-        r.raise_for_status()
-
+        r = requests.get(httpbin('status', '500'))
+        self.assertFalse(r.ok)
 
     def test_decompress_gzip(self):
-
         r = requests.get(httpbin('gzip'))
         r.content.decode('ascii')
 
-
     def test_unicode_get(self):
+        url = httpbin('/get')
+        requests.get(url, params={'foo': 'føø'})
+        requests.get(url, params={'føø': 'føø'})
+        requests.get(url, params={'føø': 'føø'})
+        requests.get(url, params={'foo': 'foo'})
+        requests.get(httpbin('ø'), params={'foo': 'foo'})
 
-        for service in SERVICES:
-
-            url = service('/get')
-
-            requests.get(url, params={'foo': u'føø'})
-            requests.get(url, params={u'føø': u'føø'})
-            requests.get(url, params={'føø': 'føø'})
-            requests.get(url, params={'foo': u'foo'})
-            requests.get(service('ø'), params={'foo': u'foo'})
-
-
-    def test_httpauth_recursion(self):
-
-        http_auth = ('user', 'BADpass')
-
-        for service in SERVICES:
-            r = requests.get(service('basic-auth', 'user', 'pass'), auth=http_auth)
-            self.assertEquals(r.status_code, 401)
-
-
-    def test_urlencoded_post_data(self):
-
-        for service in SERVICES:
-
-            r = requests.post(service('post'), data=dict(test='fooaowpeuf'))
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post'))
-
-            rbody = json.loads(r.content)
-
-            self.assertEquals(rbody.get('form'), dict(test='fooaowpeuf'))
-            self.assertEquals(rbody.get('data'), '')
-
-
-    def test_nonurlencoded_post_data(self):
-
-        for service in SERVICES:
-
-            r = requests.post(service('post'), data='fooaowpeuf')
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post'))
-
-            rbody = json.loads(r.content)
-            # Body wasn't valid url encoded data, so the server returns None as
-            # "form" and the raw body as "data".
-            self.assertEquals(rbody.get('form'), {})
-            self.assertEquals(rbody.get('data'), 'fooaowpeuf')
-
-
-    def test_urlencoded_post_querystring(self):
-
-        for service in SERVICES:
-
-            r = requests.post(service('post'), params=dict(test='fooaowpeuf'))
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post?test=fooaowpeuf'))
-
-            rbody = json.loads(r.content)
-            self.assertEquals(rbody.get('form'), {}) # No form supplied
-            self.assertEquals(rbody.get('data'), '')
-
-
-    def test_urlencoded_post_query_and_data(self):
-
-        for service in SERVICES:
-
-            r = requests.post(
-                service('post'),
-                params=dict(test='fooaowpeuf'),
-                data=dict(test2="foobar"))
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post?test=fooaowpeuf'))
-
-            rbody = json.loads(r.content)
-            self.assertEquals(rbody.get('form'), dict(test2='foobar'))
-            self.assertEquals(rbody.get('data'), '')
-
-
-    def test_nonurlencoded_postdata(self):
-
-        for service in SERVICES:
-
-            r = requests.post(service('post'), data="foobar")
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-
-            rbody = json.loads(r.content)
-
-            self.assertEquals(rbody.get('form'), {})
-            self.assertEquals(rbody.get('data'), 'foobar')
-
-
-    # def test_idna(self):
-    #     r = requests.get(u'http://➡.ws/httpbin')
-    #     assert 'httpbin' in r.url
-
+    def test_unicode_header_name(self):
+        requests.put(httpbin('put'), headers={str('Content-Type'): 'application/octet-stream'}, data='\xff') # compat.str is unicode.
 
     def test_urlencoded_get_query_multivalued_param(self):
 
-        for service in SERVICES:
+        r = requests.get(httpbin('get'), params=dict(test=['foo', 'baz']))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.url, httpbin('get?test=foo&test=baz'))
 
-            r = requests.get(service('get'), params=dict(test=['foo','baz']))
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.url, service('get?test=foo&test=baz'))
-
-
-    def test_urlencoded_post_querystring_multivalued(self):
-
-        for service in SERVICES:
-
-            r = requests.post(service('post'), params=dict(test=['foo','baz']))
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post?test=foo&test=baz'))
-
-            rbody = json.loads(r.content)
-            self.assertEquals(rbody.get('form'), {}) # No form supplied
-            self.assertEquals(rbody.get('data'), '')
-
-
-    def test_urlencoded_post_query_multivalued_and_data(self):
-
-        for service in SERVICES:
-
-            r = requests.post(
-                service('post'),
-                params=dict(test=['foo','baz']),
-                data=dict(test2="foobar",test3=['foo','baz']))
-
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(r.headers['content-type'], 'application/json')
-            self.assertEquals(r.url, service('post?test=foo&test=baz'))
-            rbody = json.loads(r.content)
-            self.assertEquals(rbody.get('form'), dict(test2='foobar',test3='foo'))
-            self.assertEquals(rbody.get('data'), '')
-
-
-    def test_GET_no_redirect(self):
-
-        for service in SERVICES:
-
-            r = requests.get(service('redirect', '3'), allow_redirects=False)
-            self.assertEquals(r.status_code, 302)
-            self.assertEquals(len(r.history), 0)
-
-
-    def test_HEAD_no_redirect(self):
-
-        for service in SERVICES:
-
-            r = requests.head(service('redirect', '3'), allow_redirects=False)
-            self.assertEquals(r.status_code, 302)
-            self.assertEquals(len(r.history), 0)
-
-
-    def test_redirect_history(self):
-
-        for service in SERVICES:
-
-            r = requests.get(service('redirect', '3'))
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(len(r.history), 3)
-
-
-    def test_relative_redirect_history(self):
-
-        for service in SERVICES:
-
-            r = requests.get(service('relative-redirect', '3'))
-            self.assertEquals(r.status_code, 200)
-            self.assertEquals(len(r.history), 3)
-
-
-    def test_session_HTTP_200_OK_GET(self):
-
-        s = requests.session()
-        r = s.get(httpbin('/get'))
+    def test_different_encodings_dont_break_post(self):
+        r = requests.post(httpbin('post'),
+                          data={'stuff': json.dumps({'a': 123})},
+                          params={'blah': 'asdf1234'},
+                          files={'file': ('test_requests.py', open(__file__, 'rb'))})
         self.assertEqual(r.status_code, 200)
 
+    def test_custom_content_type(self):
+        r = requests.post(httpbin('post'),
+                          data={'stuff': json.dumps({'a': 123})},
+                          files={'file1': ('test_requests.py', open(__file__, 'rb')),
+                                 'file2': ('test_requests', open(__file__, 'rb'),
+                                           'text/py-content-type')})
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(b"text/py-content-type" in r.request.body)
 
-    def test_session_persistent_headers(self):
+    def test_hook_receives_request_arguments(self):
+        def hook(resp, **kwargs):
+            assert resp is not None
+            assert kwargs != {}
 
-        heads = {'User-agent': 'Mozilla/5.0'}
+        requests.Request('GET', HTTPBIN, hooks={'response': hook})
 
-        s = requests.session()
-        s.headers = heads
+    def test_prepared_request_hook(self):
+        def hook(resp, **kwargs):
+            resp.hook_working = True
+            return resp
 
-        # Make 2 requests from Session object, should send header both times
-        r1 = s.get(httpbin('user-agent'))
-        assert heads['User-agent'] in r1.content
+        req = requests.Request('GET', HTTPBIN, hooks={'response': hook})
+        prep = req.prepare()
 
-        r2 = s.get(httpbin('user-agent'))
-        assert heads['User-agent'] in r2.content
+        s = requests.Session()
+        resp = s.send(prep)
 
-        new_heads = {'User-agent': 'blah'}
-        r3 = s.get(httpbin('user-agent'), headers=new_heads)
-        assert new_heads['User-agent'] in r3.content
+        self.assertTrue(hasattr(resp, 'hook_working'))
 
-        self.assertEqual(r2.status_code, 200)
+    def test_links(self):
+        r = requests.Response()
+        r.headers = {
+            'cache-control': 'public, max-age=60, s-maxage=60',
+            'connection': 'keep-alive',
+            'content-encoding': 'gzip',
+            'content-type': 'application/json; charset=utf-8',
+            'date': 'Sat, 26 Jan 2013 16:47:56 GMT',
+            'etag': '"6ff6a73c0e446c1f61614769e3ceb778"',
+            'last-modified': 'Sat, 26 Jan 2013 16:22:39 GMT',
+            'link': ('<https://api.github.com/users/kennethreitz/repos?'
+                     'page=2&per_page=10>; rel="next", <https://api.github.'
+                     'com/users/kennethreitz/repos?page=7&per_page=10>; '
+                     ' rel="last"'),
+            'server': 'GitHub.com',
+            'status': '200 OK',
+            'vary': 'Accept',
+            'x-content-type-options': 'nosniff',
+            'x-github-media-type': 'github.beta',
+            'x-ratelimit-limit': '60',
+            'x-ratelimit-remaining': '57'
+        }
+        self.assertEqual(r.links['next']['rel'], 'next')
 
-    def test_session_persistent_cookies(self):
+    def test_cookie_parameters(self):
+        key = 'some_cookie'
+        value = 'some_value'
+        secure = True
+        domain = 'test.com'
+        rest = {'HttpOnly': True}
 
-        s = requests.session()
+        jar = requests.cookies.RequestsCookieJar()
+        jar.set(key, value, secure=secure, domain=domain, rest=rest)
 
-        # Internally dispatched cookies are sent.
-        _c = {'kenneth': 'reitz', 'bessie': 'monke'}
-        r = s.get(httpbin('cookies'), cookies=_c)
-        r = s.get(httpbin('cookies'))
+        self.assertEqual(len(jar), 1)
+        self.assertTrue('some_cookie' in jar)
 
-        # Those cookies persist transparently.
-        c = json.loads(r.content).get('cookies')
-        assert c == _c
+        cookie = list(jar)[0]
+        self.assertEqual(cookie.secure, secure)
+        self.assertEqual(cookie.domain, domain)
+        self.assertEqual(cookie._rest['HttpOnly'], rest['HttpOnly'])
 
-        # Double check.
-        r = s.get(httpbin('cookies'), cookies={})
-        c = json.loads(r.content).get('cookies')
-        assert c == _c
+    def test_time_elapsed_blank(self):
+        r = requests.get(httpbin('get'))
+        td = r.elapsed
+        total_seconds = ((td.microseconds + (td.seconds + td.days * 24 * 3600)
+                         * 10**6) / 10**6)
+        self.assertTrue(total_seconds > 0.0)
 
-        # Remove a cookie by setting it's value to None.
-        r = s.get(httpbin('cookies'), cookies={'bessie': None})
-        c = json.loads(r.content).get('cookies')
-        del _c['bessie']
-        assert c == _c
+    def test_response_is_iterable(self):
+        r = requests.Response()
+        io = StringIO.StringIO('abc')
+        r.raw = io
+        self.assertTrue(next(iter(r)))
+        io.close()
 
-        # Test session-level cookies.
-        s = requests.session(cookies=_c)
-        r = s.get(httpbin('cookies'))
-        c = json.loads(r.content).get('cookies')
-        assert c == _c
+    def test_get_auth_from_url(self):
+        url = 'http://user:pass@complex.url.com/path?query=yes'
+        self.assertEqual(('user', 'pass'),
+                         requests.utils.get_auth_from_url(url))
 
-        # Have the server set a cookie.
-        r = s.get(httpbin('cookies', 'set', 'k', 'v'), allow_redirects=True)
-        c = json.loads(r.content).get('cookies')
+    def test_cannot_send_unprepared_requests(self):
+        r = requests.Request(url=HTTPBIN)
+        self.assertRaises(ValueError, requests.Session().send, r)
 
-        assert 'k' in c
+    def test_http_error(self):
+        error = requests.exceptions.HTTPError()
+        self.assertEqual(error.response, None)
+        response = requests.Response()
+        error = requests.exceptions.HTTPError(response=response)
+        self.assertEqual(error.response, response)
+        error = requests.exceptions.HTTPError('message', response=response)
+        self.assertEqual(str(error), 'message')
+        self.assertEqual(error.response, response)
 
-        # And server-set cookie persistience.
-        r = s.get(httpbin('cookies'))
-        c = json.loads(r.content).get('cookies')
+    def test_session_pickling(self):
+        r = requests.Request('GET', httpbin('get'))
+        s = requests.Session()
 
-        assert 'k' in c
+        s = pickle.loads(pickle.dumps(s))
 
-
-
-    def test_session_persistent_params(self):
-
-        params = {'a': 'a_test'}
-
-        s = requests.session()
-        s.params = params
-
-        # Make 2 requests from Session object, should send header both times
-        r1 = s.get(httpbin('get'))
-        assert params['a'] in r1.content
-
-
-        params2 = {'b': 'b_test'}
-
-        r2 = s.get(httpbin('get'), params=params2)
-        assert params['a'] in r2.content
-        assert params2['b'] in r2.content
-
-
-        params3 = {'b': 'b_test', 'a': None, 'c': 'c_test'}
-
-        r3 = s.get(httpbin('get'), params=params3)
-
-        assert not params['a'] in r3.content
-        assert params3['b'] in r3.content
-        assert params3['c'] in r3.content
-
-    def test_invalid_content(self):
-        # WARNING: if you're using a terrible DNS provider (comcast),
-        # this will fail.
-        try:
-            hah = 'http://somedomainthatclearlydoesntexistg.com'
-            r = requests.get(hah, allow_redirects=False)
-        except requests.ConnectionError:
-            pass   # \o/
-        else:
-            assert False
-
-
-        config = {'safe_mode': True}
-        r = requests.get(hah, allow_redirects=False, config=config)
-        assert r.content == None
+        r = s.send(r.prepare())
+        self.assertEqual(r.status_code, 200)
 
 
 if __name__ == '__main__':
