@@ -1,3 +1,10 @@
+requests (1.2.0-1pexip1) precise; urgency=low
+
+  * Import Debian build rules from upstream SVN
+  * Remove dependency on python-urllib3 (not in precise)
+
+ -- John-Mark Bell <jmb@pexip.com>  Fri, 10 May 2013 14:50:41 +0100
+
 requests (1.2.0-1) experimental; urgency=low
 
   * New upstream version.
