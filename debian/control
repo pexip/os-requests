@@ -15,6 +15,7 @@ X-Python3-Version: >= 3.0
 Homepage: http://python-requests.org
 Vcs-Svn: svn://anonscm.debian.org/python-modules/packages/requests/trunk/
 Vcs-Browser: http://anonscm.debian.org/viewvc/python-modules/packages/requests/trunk/
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
 
 Package: python-requests
 Architecture: all
