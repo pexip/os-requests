@@ -1,6 +1,7 @@
 Source: requests
-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
-Uploaders: Daniele Tricoli <eriol@mornie.org>
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+XSBC-Pexip-Original-Uploaders: Daniele Tricoli <eriol@mornie.org>
 Section: python
 Priority: optional
 Build-Depends:
