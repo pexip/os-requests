@@ -4,11 +4,11 @@ Upstream-Contact: Kenneth Reitz <me@kennethreitz.com>
 Source: http://pypi.python.org/pypi/requests
 
 Files: *
-Copyright: 2011-2013, Kenneth Reitz
+Copyright: 2011-2014, Kenneth Reitz
 License: Apache
 
 Files: requests/packages/urllib3/*
-Copyright: 2008-2011, Andrey Petrov
+Copyright: 2008-2013, Andrey Petrov
 License: Expat
 
 Files: requests/packages/urllib3/packages/ordered_dict.py
@@ -23,7 +23,7 @@ Files: requests/packages/urllib3/packages/six.py
 Copyright: 2010-2011, Benjamin Peterson
 License: Expat
 
-Files: requests/packages/charade/*
+Files: requests/packages/chardet/*
 Copyright: 2006-2008, Mark Pilgrim
            2012-2013, Ian Cordasco
 License: LGPL-2.1+
@@ -33,7 +33,7 @@ Copyright: 2013, Mozilla
 License: LGPL-2.1+
 
 Files: debian/*
-Copyright: 2011-2013, Daniele Tricoli <eriol@mornie.org>
+Copyright: 2011-2014, Daniele Tricoli <eriol@mornie.org>
 License: Apache
 
 License: Apache

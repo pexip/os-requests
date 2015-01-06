@@ -1,33 +1,30 @@
 #!/usr/bin/make -f
 
-PYVERS := $(shell pyversions -r)
-PY3VERS := $(shell py3versions -r)
+export PYBUILD_NAME=requests
 
 %:
-	dh $@ --with python2,python3 --buildsystem=python_distutils
+	dh $@ --with python2,python3 --buildsystem=pybuild
 
-override_dh_auto_build:
-	set -ex; \
-	for python in $(PYVERS) $(PY3VERS); do \
-		$$python setup.py build; \
-	done
+# The test suite currently requires external network access, so we
+# can't enable it.  Once this issue is fixed, it will be easy to
+# re-enable.
+#
+# https://github.com/kennethreitz/requests/issues/1166
+#
+# barry@debian.org 2014-06-04
+#override_dh_auto_test:
+#	PYBUILD_SYSTEM=custom \
+#	PYBUILD_TEST_ARGS="{interpreter} test_requests.py" \
+#	http_proxy= https_proxy= \
+#	dh_auto_test
 
-override_dh_auto_clean:
-	rm -rf build
-	dh_auto_clean
-
-override_dh_auto_install:
-	set -ex; \
-	for python in $(PYVERS); do \
-		$$python setup.py install --skip-build --root debian/python-requests \
-			--install-layout deb; \
-	done
-
-	set -ex; \
-	for python in $(PY3VERS); do \
-		$$python setup.py install --skip-build --root debian/python3-requests \
-			--install-layout deb; \
-	done
+override_dh_auto_test:
 
 override_dh_installchangelogs:
 	dh_installchangelogs HISTORY.rst
+
+override_dh_auto_install:
+	dh_auto_install
+	python3 setup.py bdist_wheel \
+		--universal \
+		-d $(CURDIR)/debian/tmp/usr/share/python-wheels

@@ -1,3 +1,143 @@
+requests (2.4.3-4pexip1) pexip; urgency=low
+
+  * New upstream release; migrate to Jessie.
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 06 Jan 2015 12:45:37 +0000
+
+requests (2.4.3-4) unstable; urgency=medium
+
+  * debian/patches/04_make-requests.packages.urllib3-same-as-urllib3.patch
+    - Fix requests.packages.urllib3 sub on Python 3. Thanks to Tianon
+      Gravi for the report. (Closes: #769496)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 14 Nov 2014 04:50:22 +0100
+
+requests (2.4.3-3) unstable; urgency=medium
+
+  * debian/patches/04_make-requests.packages.urllib3-same-as-urllib3.patch
+    - Make Python import system know that requests.packages.urllib3 and
+      urllib3 are the same thing. Thanks to Jakub Wilk for the patch.
+      (Closes: #769047)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Tue, 11 Nov 2014 03:28:18 +0100
+
+requests (2.4.3-2) unstable; urgency=medium
+
+  * debian/patches/03_export-IncompleteRead.patch
+    - Export IncompleteRead from requests.compat since it's imported by
+      python-pip. (Closes: #766419)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Thu, 23 Oct 2014 02:54:46 +0200
+
+requests (2.4.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control
+    - Fix duplicate-short-description.
+    - Bump Standards-Version to 3.9.6 (no changes needed).
+    - Add python-ndg-httpsclient, python-openssl and python-pyasn1 into
+      python-urllib3's Recomends to ensure that SNI works as expected and to
+      prevent CRIME attack. (Closes: #755805)
+    - Add python3-ndg-httpsclient, python3-openssl and python3-pyasn1 into
+      python3-urllib3's Suggests since Python 3 already support SNI and
+      and SSL compression can be disabled using OP_NO_COMPRESSION.
+    - Bump python{,3}-urllib3 to (>=1.9.1).
+  * debian/patches/01_use-system-ca-certificates.patch
+    - Refresh.
+  * debian/patches/02_use-system-chardet-and-urllib3.patch
+    - Refresh.
+    - Provide requests.packages package because it will be used to supply
+      a stub for requests.packages.urllib3.
+  * debian/python{,3}-requests.links:
+    - Provide requests.packages.urllib3 as symlink of python{,3}-urllib3
+      system package since it is used as import location. (Closes: #753578)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Tue, 21 Oct 2014 01:35:59 +0200
+
+requests (2.3.0-1) unstable; urgency=medium
+
+  * Team upload.
+    - Fix CVE-2014-1829 and CVE-2014-1830 (Closes: #733108)
+  * New upstream release.
+  * d/control: Added python{,3}-pytest to Build-Depends.
+  * d/patches/*: Refreshed.
+
+ -- Barry Warsaw <barry@debian.org>  Wed, 04 Jun 2014 10:40:46 -0400
+
+requests (2.2.1-3) unstable; urgency=medium
+
+  * Team upload.
+  * d/control:
+    - Fix python-requests-whl Depends.
+    - Fix typo in python-requests-whl description.
+
+ -- Barry Warsaw <barry@debian.org>  Thu, 22 May 2014 18:33:19 -0400
+
+requests (2.2.1-2) unstable; urgency=medium
+
+  * Team upload.
+  * debian/control
+    - Add python-requests-whl binary package.
+    - Build-Depends on python3-wheel, python-setuptools,
+      and python3-setuptools.
+    - wrap-and-sort.
+  * debian/rules:
+    - Simplify by using PYBUILD_NAME.
+    - Build the universal wheels.
+
+ -- Barry Warsaw <barry@debian.org>  Thu, 15 May 2014 17:09:30 -0400
+
+requests (2.2.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control
+    - Bumped Standards-Version to 3.9.5 (no changes needed)
+  * debian/copyright
+    - Updated copyright years
+  * debian/patches/02_use-system-chardet-and-urllib3.patches
+    - Refreshed
+
+ -- Daniele Tricoli <eriol@mornie.org>  Mon, 27 Jan 2014 04:58:17 +0100
+
+requests (2.0.0-1) unstable; urgency=low
+
+  * New upstream release (Closes: #725784)
+  * Switched to pybuild
+  * debian/clean
+    - Switched to debian/clean for cleaning instead of using debian/rules
+  * debian/control
+    - Bumped python(3)-urllib3 to (>=1.7.1)
+  * debian/copyright
+    - Updated copyright year
+  * debian/patches/02_use-system-chardet-and-urllib3.patches
+    - Refreshed
+  * debian/watch
+    - Switched download URL to https
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 18 Oct 2013 19:20:21 +0200
+
+requests (1.2.3-1) unstable; urgency=low
+
+  * New upstream release (Closes: #712915) (LP: #1187429)
+    - Thanks to Scott Moser for the report
+  * debian/compat
+    - Bumped debhelper compatibility level to 9
+  * debian/control
+    - Bumped debhelper B-D to (>= 9)
+    - Temporarily bumped X-Python-Version to >= 2.7 to prevent FTBFS
+      due to lack of python-urllib3 for Python 2.6
+  * debian/patches/02_use-system-chardet-and-urllib3.patches
+    - Refreshed
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 21 Jun 2013 08:52:39 +0200
+
+requests (1.2.0-2) unstable; urgency=low
+
+  * Uploading to unstable.
+  * rm -rf requests.egg-info on clean so the package can be built twice.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 11 May 2013 05:15:04 +0000
+
 requests (1.2.0-1pexip1) precise; urgency=low
 
   * Import Debian build rules from upstream SVN
