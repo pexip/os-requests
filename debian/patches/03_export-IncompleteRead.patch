@@ -10,7 +10,7 @@ Last-Update: 2014-10-23
 @@ -92,6 +92,7 @@
      from Cookie import Morsel
      from StringIO import StringIO
-     from urllib3.packages.ordered_dict import OrderedDict
+     from .packages.urllib3.packages.ordered_dict import OrderedDict
 +    from httplib import IncompleteRead
  
      builtin_str = str
