@@ -1,3 +1,21 @@
+requests (2.4.3-6) unstable; urgency=medium
+
+  * debian/patches/05_do-not-ascribe-cookies-to-the-target-domain.patch
+    - Fix session fixation and cookie stealing: CVE-2015-2296.
+      (Closes: #780506)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Mon, 16 Mar 2015 01:31:10 +0100
+
+requests (2.4.3-5) unstable; urgency=medium
+
+  * Team upload.
+  * d/control: Remove the Build-Depends on python{,3}-pytest since we
+    aren't actually running the tests at build time.  (Closes: #770173)
+  * d/rules: Update the comment about why the tests are currently disabled
+    at build time to point to the updated upstream url.
+
+ -- Barry Warsaw <barry@debian.org>  Wed, 19 Nov 2014 18:00:46 -0500
+
 requests (2.4.3-4) unstable; urgency=medium
 
   * debian/patches/04_make-requests.packages.urllib3-same-as-urllib3.patch
