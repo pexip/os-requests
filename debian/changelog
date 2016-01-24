@@ -1,3 +1,98 @@
+requests (2.9.1-2) unstable; urgency=medium
+
+  * debian/control
+    - Tweak fixed dependency on urllib3 1.13.1 to accommodate
+      packaging changes, as the version requirement is upstream version
+      only. Thanks James Page for report and patch. (Closes: #809485)
+    - Use HTTPS scheme for Vcs-Git.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Sun, 24 Jan 2016 21:12:17 +0100
+
+requests (2.9.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control
+    - Bump python{,3}-urllib3 to = 1.13.1-1 both in Build-Depends and Depends.
+      Tighten urllib3 dependency is needed because, otherwise, any programs
+      depending to requests through pkgresources will fail. Thanks to Vincent
+      Bernat for the report.
+  * debian/patches/02_populate-install_requires.patch
+    - Refresh. (Closes: #809031)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Sun, 27 Dec 2015 13:14:02 +0100
+
+requests (2.8.1-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #802760)
+  * debian/control
+    - Bump python{,3}-urllib3 to >= 1.12 both in Build-Depends and Depends.
+  * debian/patches/05_upstream_devendorize.patch
+    - Remove because included since version 2.8.0.
+  * debian/patches/02_populate-install_requires.patch
+    - Populate install_requires for unbundled packages to avoid breakage
+      updating urllib3 via pip when requests/urllib3 are already installed
+      via the system packages.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Sat, 24 Oct 2015 17:46:58 +0200
+
+requests (2.7.0-3) unstable; urgency=medium
+
+  [ Barry Warsaw ]
+  * debian/patches:
+    - 02_use-system-chardet-and-urllib3.patch and
+      04_make-requests.packages.urllib3-same-as-urllib3.patch: Removed in
+      favor of upstream's pull request #2567
+    - 05_upstream_devendorize.patch: Upstream's pull request to better
+      support the devendorizing of urllib3 and chardet.
+      (Closes: #771349, #788383)
+
+  [ Daniele Tricoli ]
+  * debian/python{,3}-requests.pyremove
+    - Remove embedded copy of chardet and urllib3. Previously it was done by
+      02_use-system-chardet-and-urllib3.patch.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Thu, 11 Jun 2015 01:39:13 +0200
+
+requests (2.7.0-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * debian/control
+    - Add httpie (<< 0.9.2) to python-requests' Breaks since constants
+      imported by httpie from requests.compat were removed.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Wed, 27 May 2015 17:31:38 +0200
+
+requests (2.7.0-1) experimental; urgency=medium
+
+  * New upstream release. (Closes: #784095)
+    - Embedded copy (not used) of urllib3 does not require SSLv3 anymore.
+      (Closes: #770172)
+  * debian/control
+    - Move python-ndg-httpsclient, python-openssl and python-pyasn1 to Suggests
+      inside python-requests' stanza since Python 2.7.9 include SNI support
+      and PEP 476 made it as secure as Python 3.
+    - Bump python{,3}-urllib3 to 1.10.4.
+  * debian/copyright
+    - Update copyright years.
+    - Update to MPL-2.0 license stanza of requests/cacert.pem (not used but
+      shipped in orig tarball).
+  * debian/watch
+    - Use pypi.debian.net redirector.
+  * debian/patches/01_use-system-ca-certificates.patch
+    - Refresh and remove CA certificate bundle from MANIFEST.in.
+     (Closes: #781610)
+  * debian/patches/02_use-system-chardet-and-urllib3.patch
+    - Refresh.
+  * debian/patches/04_make-requests.packages.urllib3-same-as-urllib3.patch
+    - Refresh.
+  * debian/patches/05_do-not-ascribe-cookies-to-the-target-domain.patch
+    - Remove since fixed upstream.
+  * debian/python{,3}-requests.links
+    - Remove links thanks to the import machinery in
+      04_make-requests.packages.urllib3-same-as-urllib3.patch
+
+ -- Daniele Tricoli <eriol@mornie.org>  Mon, 04 May 2015 21:43:40 +0200
+
 requests (2.4.3-6) unstable; urgency=medium
 
   * debian/patches/05_do-not-ascribe-cookies-to-the-target-domain.patch

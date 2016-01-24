@@ -9,18 +9,18 @@ Build-Depends:
  python-all (>= 2.6.6-3),
  python-chardet,
  python-setuptools,
- python-urllib3 (>= 1.9.1),
+ python-urllib3 (>= 1.13.1), python-urllib3 (<< 1.13.2),
  python3-all,
  python3-chardet,
  python3-setuptools,
- python3-urllib3 (>= 1.7.1),
+ python3-urllib3 (>= 1.13.1), python3-urllib3 (<< 1.13.2),
  python3-wheel
 Standards-Version: 3.9.6
 X-Python-Version: >= 2.7
 X-Python3-Version: >= 3.0
 Homepage: http://python-requests.org
-Vcs-Svn: svn://anonscm.debian.org/python-modules/packages/requests/trunk/
-Vcs-Browser: http://anonscm.debian.org/viewvc/python-modules/packages/requests/trunk/
+Vcs-Git: https://anonscm.debian.org/python-modules/packages/requests.git
+Vcs-Browser: https://anonscm.debian.org/cgit/python-modules/packages/requests.git
 
 Package: python-requests
 Architecture: all
@@ -29,11 +29,12 @@ Depends:
  ${python:Depends},
  ca-certificates,
  python-chardet,
- python-urllib3 (>= 1.9.1)
-Recommends: 
+ python-urllib3 (>= 1.13.1), python-urllib3 (<< 1.13.2)
+Suggests: 
   python-ndg-httpsclient,
   python-openssl,
   python-pyasn1
+Breaks: httpie (<< 0.9.2)
 Description: elegant and simple HTTP library for Python2, built for human beings
  Requests allow you to send HTTP/1.1 requests. You can add headers, form data,
  multipart files, and parameters with simple Python dictionaries, and access
@@ -60,7 +61,7 @@ Depends:
  ${python3:Depends},
  ca-certificates,
  python3-chardet,
- python3-urllib3 (>= 1.9.1)
+ python3-urllib3 (>= 1.13.1), python3-urllib3 (<< 1.13.2)
 Suggests:
  python3-ndg-httpsclient,
  python3-openssl,

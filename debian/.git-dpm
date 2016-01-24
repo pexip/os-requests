@@ -1,0 +1,11 @@
+# see git-dpm(1) from git-dpm package
+fedd3e5275d3388e8d213c592aeca50640ceb372
+fedd3e5275d3388e8d213c592aeca50640ceb372
+8565e660f5f59be865744d0a65a829f61dd16b00
+8565e660f5f59be865744d0a65a829f61dd16b00
+requests_2.9.1.orig.tar.gz
+17f01c47a0d7c676f6291608ef2f43db3fa74095
+484252
+debianTag="debian/%e%v"
+patchedTag="patched/%e%v"
+upstreamTag="upstream/%e%u"
