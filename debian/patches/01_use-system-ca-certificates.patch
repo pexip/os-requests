@@ -1,12 +1,31 @@
-Description: Use the bundle provided by ca-certificates instead of
+From 34848fcf05a665d46f4ec2e9e86d98a67dcac686 Mon Sep 17 00:00:00 2001
+From: Daniele Tricoli <eriol@mornie.org>
+Date: Thu, 8 Oct 2015 13:41:42 -0700
+Subject: Use the bundle provided by ca-certificates instead of
+
  the embedded one.
-Author: Daniele Tricoli <eriol@mornie.org>
 Forwarded: not-needed
 Last-Update: 2014-10-08
 
+Patch-Name: 01_use-system-ca-certificates.patch
+---
+ MANIFEST.in       | 2 +-
+ requests/certs.py | 4 ++--
+ setup.py          | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index 439de49..7888aee 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -1 +1 @@
+-include README.rst LICENSE NOTICE HISTORY.rst test_requests.py requirements.txt requests/cacert.pem
++include README.rst LICENSE NOTICE HISTORY.rst test_requests.py requirements.txt
+diff --git a/requests/certs.py b/requests/certs.py
+index 07e6475..e61ee5d 100644
 --- a/requests/certs.py
 +++ b/requests/certs.py
-@@ -18,8 +18,8 @@
+@@ -18,8 +18,8 @@ try:
  except ImportError:
      def where():
          """Return the preferred certificate bundle."""
@@ -17,9 +36,11 @@ Last-Update: 2014-10-08
  
  if __name__ == '__main__':
      print(where())
+diff --git a/setup.py b/setup.py
+index b7ed12b..c483535 100755
 --- a/setup.py
 +++ b/setup.py
-@@ -43,7 +43,7 @@
+@@ -50,7 +50,7 @@ setup(
      author_email='me@kennethreitz.com',
      url='http://python-requests.org',
      packages=packages,
