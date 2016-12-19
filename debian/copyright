@@ -4,11 +4,11 @@ Upstream-Contact: Kenneth Reitz <me@kennethreitz.com>
 Source: http://pypi.python.org/pypi/requests
 
 Files: *
-Copyright: 2015, Kenneth Reitz
+Copyright: 2016, Kenneth Reitz
 License: Apache
 
 Files: requests/packages/urllib3/*
-Copyright: 2008-2013, Andrey Petrov
+Copyright: 2008-2016, Andrey Petrov
 License: Expat
 
 Files: requests/packages/urllib3/packages/ordered_dict.py
@@ -32,8 +32,17 @@ Files: requests/cacert.pem
 Copyright: 2013, Mozilla
 License: MPL-2.0
 
+Files: requests/packages/idna/*
+Copyright: 2013-2016, Kim Davies
+License: BSD-3-clause
+
+Files: requests/packages/idna/codec.py
+Copyright: 2013-2015 Kim Davies
+           2001-2014 Python Software Foundation
+License: BSD-3-clause and PSF-2
+
 Files: debian/*
-Copyright: 2011-2015, Daniele Tricoli <eriol@mornie.org>
+Copyright: 2011-2016, Daniele Tricoli <eriol@mornie.org>
 License: Apache
 
 License: Apache
@@ -500,3 +509,32 @@ License: MPL-2.0
  .
    This Source Code Form is "Incompatible With Secondary Licenses", as
    defined by the Mozilla Public License, v. 2.0.
+
+License: BSD-3-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+ 1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ .
+ 2. Redistributions in binary form must reproduce the above
+    copyright notice, this list of conditions and the following
+    disclaimer in the documentation and/or other materials provided with
+    the distribution.
+ .
+ 3. Neither the name of the copyright holder nor the names of the
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ DAMAGE.
