@@ -1,3 +1,9 @@
+requests (2.9.1-2pexip2) pexip; urgency=low
+
+  * Reinstate python3 build
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 18 Apr 2016 08:28:34 +0100
+
 requests (2.9.1-2pexip1) pexip; urgency=low
 
   * New upstream release
