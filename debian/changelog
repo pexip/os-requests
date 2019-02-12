@@ -1,3 +1,92 @@
+requests (2.21.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control
+    - Update to use my debian.org mail address.
+    - Bump Standards-Version to 4.3.0 (no changes needed).
+    - Bump python-all >= 2.7 in Build-Depends.
+  * debian/copyright
+    - Update to use my debian.org mail address.
+    - Update copyright years.
+
+ -- Daniele Tricoli <eriol@debian.org>  Tue, 12 Feb 2019 01:28:14 +0100
+
+requests (2.20.0-2) unstable; urgency=medium
+
+  * Bump python-urllib3 to (<< 1.25) in Build-Depends.
+    Thanks to Mattia Rizzolo for the report. (Closes: #911903)
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 26 Oct 2018 01:46:46 +0200
+
+requests (2.20.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Remove ancient X-Python-Version field
+  * d/control: Remove ancient X-Python3-Version field
+  * Convert git repository from git-dpm to gbp layout
+
+  [ Daniele Tricoli ]
+  * New upstream release.
+    - Fix CVE-2018-18074 (Closes: #910766)
+  * Add gbp.conf.
+  * debian/control
+    - Bump python{,3}-urllib3 (>= 1.21.1) (<< 1.25).
+    - Bump Standards-Version to 4.2.1 (no changes needed).
+  * debian/copyright
+    - Update upstream copyright year.
+    - Update Source field to point to new PyPI URL.
+  * debian/docs
+    - Rename README.rst to README.md.
+  * debian/rules
+    - Rename HISTORY.rst to HISTORY.md.
+  * debian/watch
+    - Remove pgpsigurlmangle since upstream is not signing releases anymore.
+  * debian/upstream/signing-key.asc
+    - Remove upstream signing-key.asc since not used anymore.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Thu, 25 Oct 2018 03:50:50 +0200
+
+requests (2.18.4-2) unstable; urgency=medium
+
+  * debian/control
+    - Update Vcs-Git and Vcs-Browser to salsa.debian.org.
+    - Add awscli (<< 1.11.139) to python3-requests' Breaks. (Closes: #870888)
+  * debian/copyright
+    - Use secure URI in format field.
+    - Update copyright years.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 09 Feb 2018 19:31:10 +0100
+
+requests (2.18.4-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release
+  * d/watch: Use https
+  * Bump X-Python3-Version to 3.4
+  * Bump debhelper compat level to 11
+  * Standards-Version is 4.1.3 now (no changes needed)
+  * d/watch: Check upstream signature
+  * Fixed required version of chardet and urllib3 for new version
+
+ -- Ondřej Nový <onovy@debian.org>  Thu, 04 Jan 2018 15:18:19 +0100
+
+requests (2.18.1-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #856619)
+    - No more bundling of dependencies. (Closes: #859504)
+  * Drop all patches.
+  * Add autodep8 tests.
+  * debian/control
+    - Bump python{,3}-urllib3 dependencies to (>= 1.21.1) (<< 1.22).
+    - Bump Standards-Version to 4.0.0 (no changes needed).
+    - Add version constraint for chardet and idna.
+    - Add python{,3}-certifi to Build-Depends and Depends.
+  * debian/copyright
+    - Remove stanzas of no more bundled dependencies.
+    - Update copyright years.
+
+ -- Daniele Tricoli <eriol@mornie.org>  Fri, 04 Aug 2017 08:13:04 +0200
+
 requests (2.12.4-1) unstable; urgency=medium
 
   * New upstream release.
