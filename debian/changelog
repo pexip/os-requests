@@ -1,3 +1,9 @@
+requests (2.12.4-1pexip2) pexip; urgency=medium
+
+  * Python 3
+
+ -- Carl Chipperfield <carl@pexip.com>  Fri, 26 Jul 2019 13:59:47 +0000
+
 requests (2.12.4-1pexip1) pexip; urgency=low
 
   * New upstream release
