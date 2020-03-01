@@ -1,3 +1,9 @@
+requests (2.21.0-1pexip1) pexip; urgency=medium
+
+  * Migrate to Buster
+
+ -- Vincent Sanders <vince@pexip.com>  Sun, 01 Mar 2020 19:24:14 +0000
+
 requests (2.21.0-1) unstable; urgency=medium
 
   * New upstream release.
