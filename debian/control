@@ -22,7 +22,7 @@ Homepage: http://python-requests.org
 Vcs-Git: https://salsa.debian.org/python-team/modules/requests.git
 Vcs-Browser: https://salsa.debian.org/python-team/modules/requests
 Testsuite: autopkgtest-pkg-python
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ buster
+XS-Pexip-Upstream: http://deb.debian.org/debian/ bullseye
 
 Package: python-requests
 Architecture: all
