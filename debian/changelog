@@ -1,3 +1,123 @@
+requests (2.25.1+dfsg-2) unstable; urgency=medium
+
+  * debian/control
+    - Drop upper bound version for chardet and urllib3. Thanks to sramacher
+      and myon for the suggestions. (Closes: #978749)
+
+ -- Daniele Tricoli <eriol@debian.org>  Thu, 31 Dec 2020 17:55:39 +0100
+
+requests (2.25.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Refresh patches.
+  * debian/control
+    - Bump chardet << 5.
+
+ -- Daniele Tricoli <eriol@debian.org>  Thu, 31 Dec 2020 03:01:11 +0100
+
+requests (2.25.0+dfsg-2) unstable; urgency=medium
+
+  * debian/patches/0002-Temporary-exclude-requests.codes.patch
+    - Temporary exclude requests.codes to make documentation not fail during
+      build. (Closes: #978351)
+  * debian/control
+    - Bump Standards-Version to 4.5.1 (no changes needed).
+
+ -- Daniele Tricoli <eriol@debian.org>  Wed, 30 Dec 2020 01:23:56 +0100
+
+requests (2.25.0+dfsg-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Security-Contact.
+
+  [ Daniele Tricoli ]
+  * New upstream version 2.25.0+dfsg
+  * debian/patches/0001-Remove-remote-images-traking-code-and-ads.patch
+    - Refresh.
+  * debian/copyright
+    - Drop section for konami.js since it's no more distributed by upstream.
+  * debian/control
+    - Bump python3-urllib3 to << 1.27.
+
+ -- Daniele Tricoli <eriol@debian.org>  Tue, 08 Dec 2020 22:46:34 +0100
+
+requests (2.24.0+dfsg-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Ondřej Nový ]
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Drew Parsons ]
+  * New upstream release.
+  * debhelper compatibility level 13
+
+ -- Drew Parsons <dparsons@debian.org>  Fri, 23 Oct 2020 19:56:50 +0800
+
+requests (2.23.0+dfsg-2) unstable; urgency=medium
+
+  * Drop python2 support; Closes: #938355
+  * debian/control
+    - suggest -doc in python3-requests, as suggested by Scott Kitterman
+
+ -- Sandro Tosi <morph@debian.org>  Wed, 01 Apr 2020 09:56:33 -0400
+
+requests (2.23.0+dfsg-1) unstable; urgency=medium
+
+  [ Fabrice BAUZAC ]
+  * d/watch: track the github tarballs (which include the documentation)
+    instead of the PyPI ones (which do not).
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Daniele Tricoli ]
+  * New upstream version 2.23.0+dfsg.
+  * Repackage to exclude non-free images and logos via Files-Excluded in
+    debian/copyright.
+  * Build doc package. (Closes: #877027)
+  * debian/control
+    - Bump Standards-Version to 4.5.0 (no changes needed).
+    - Add python-requests-doc stanza.
+    - Add python3-sphinx and python3-pygments to B-D.
+  * debian/copyright
+    - Update copyright years.
+    - Add sections for files inside docs not released with Apache License.
+  * debian/patches/0001-Remove-remote-images-traking-code-and-ads.patch
+    - Remove remote images, traking code and ads.
+  * debian/python-requests-doc.doc-base
+    - Register documentation using doc-base.
+  * debian/rules
+    - Build documentation using sphinx.
+  * debian/watch
+    - Add repacksuffix and dversionmangle options.
+
+ -- Daniele Tricoli <eriol@debian.org>  Tue, 31 Mar 2020 01:04:35 +0200
+
+requests (2.22.0-2) unstable; urgency=medium
+
+  * Upload to unstable. (Closes: #945978)
+
+ -- Daniele Tricoli <eriol@debian.org>  Thu, 05 Dec 2019 03:09:13 +0100
+
+requests (2.22.0-1) experimental; urgency=medium
+
+  [ Ondřej Nový ]
+  * Use debhelper-compat instead of debian/compat.
+  * Bump Standards-Version to 4.4.1.
+
+  [ Daniele Tricoli ]
+  * New upstream version 2.22.0.
+  * debian/control
+    - Bump python{,3}-urllib3 Builds-Depends and Depends to << 1.26.
+    - Bump debhelper compat level to 12.
+
+ -- Daniele Tricoli <eriol@debian.org>  Tue, 03 Dec 2019 01:06:18 +0100
+
 requests (2.21.0-1pexip2) pexip; urgency=medium
 
   * Rebuild in buster environment
