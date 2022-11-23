@@ -1,3 +1,41 @@
+requests (2.28.1+dfsg-1) unstable; urgency=medium
+
+  [ Lena Voytek ]
+  * New upstream version 2.28.1+dfsg
+  * debian/patches/0001-Remove-remote-images-traking-code-and-ads.patch
+    - Refresh.
+  * debian/rules: Disable test_json_decode_persists_doc_attr
+
+  [ Daniele Tricoli ]
+  * debian/control
+    - Bump standards version to 4.6.1, no changes needed.
+
+ -- Daniele Tricoli <eriol@debian.org>  Thu, 24 Nov 2022 00:23:09 +0100
+
+requests (2.27.1+dfsg-1) unstable; urgency=medium
+
+  [ root ]
+  * Update standards version to 4.6.0, no changes needed.
+
+  [ Daniele Tricoli ]
+  * New upstream version 2.27.1+dfsg
+  * Enable tests both at build time and using autopkgtest.
+  * Enable salsa pipelines.
+  * debian/copyright
+    - Update Files-Excluded rule to remove the logo.
+    - Update copyright years.
+  * debian/patches/0001-Remove-remote-images-traking-code-and-ads.patch
+    - Refresh.
+  * debian/patches/0002-Temporary-exclude-requests.codes.patch
+    - Drop since fixed upstream.
+  * debian/control
+    - Add python3-pytest, python3-pytest-httpbin, python3-pytest-mock,
+      python3-socks and python3-trustme to Build-Depends.
+    - Set python3-requests Multi-Arch: foreign. Thanks Elrond for the report.
+      (Closes: #985625)
+
+ -- Daniele Tricoli <eriol@debian.org>  Sun, 20 Mar 2022 17:51:34 +0100
+
 requests (2.25.1+dfsg-2) unstable; urgency=medium
 
   * debian/control

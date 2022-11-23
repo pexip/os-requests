@@ -2,7 +2,7 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: requests
 Upstream-Contact: Kenneth Reitz <me@kennethreitz.com>
 Source: https://pypi.org/project/requests/
-Files-Excluded: ext docs/_static/*.jpg
+Files-Excluded: ext docs/_static/*.png
 
 Files: *
 Copyright: 2019, Kenneth Reitz
@@ -49,7 +49,7 @@ License: other
  POSSIBILITY OF SUCH DAMAGE.
 
 Files: debian/*
-Copyright: 2011-2020, Daniele Tricoli <eriol@debian.org>
+Copyright: 2011-2022, Daniele Tricoli <eriol@debian.org>
 License: Apache
 
 License: Apache
