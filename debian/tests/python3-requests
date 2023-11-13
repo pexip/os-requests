@@ -1,8 +1,10 @@
-#!/usr/bin/make -f
+#!/bin/sh
+set -efu
 
-export PYBUILD_NAME=requests
-export PYBUILD_TEST_PYTEST=1
 export PYTHONWARNINGS=d
+
+python3_all="$(py3versions -s 2>/dev/null)"
+
 TESTS_TO_EXCLUDE="not test_use_proxy_from_environment and \
 not TestGetEnvironProxies and \
 not test_mixed_case_scheme_acceptable and \
@@ -103,23 +105,13 @@ not test_proxy_env_vars_override_default and \
 not test_urllib3_retries and \
 not test_redirecting_to_bad_url and \
 not test_json_decode_compatibility and \
-not test_set_environ and \
-not test_json_decode_persists_doc_attr"
-export PYBUILD_TEST_ARGS=tests -k ${TESTS_TO_EXCLUDE}
+not test_set_environ"
 
-BUILD_DATE  = $(shell LC_ALL=C date -u "+%B %d, %Y" -d "@$(SOURCE_DATE_EPOCH)")
-SPHINXOPTS := -D html_last_updated_fmt="$(BUILD_DATE)"
+cp -r tests "$AUTOPKGTEST_TMP/"
+cd "$AUTOPKGTEST_TMP"
 
-%:
-	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
+for py in $python3_all; do
+    echo "=== $py ==="
+    $py -m pytest --verbose -k "${TESTS_TO_EXCLUDE}" 2>&1
+done
 
-override_dh_installchangelogs:
-	dh_installchangelogs HISTORY.md
-
-override_dh_sphinxdoc:
-ifeq (,$(findstring nodocs, $(DEB_BUILD_OPTIONS)))
-	PYTHONPATH=. python3 -m sphinx $(SPHINXOPTS) -N -bhtml docs/ \
-		debian/python-requests-doc/usr/share/doc/python-requests-doc/html/
-
-	dh_sphinxdoc
-endif
