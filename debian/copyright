@@ -49,7 +49,7 @@ License: other
  POSSIBILITY OF SUCH DAMAGE.
 
 Files: debian/*
-Copyright: 2011-2022, Daniele Tricoli <eriol@debian.org>
+Copyright: 2011-2023, Daniele Tricoli <eriol@debian.org>
 License: Apache
 
 License: Apache

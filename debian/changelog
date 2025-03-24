@@ -1,3 +1,74 @@
+requests (2.32.3+dfsg-5) unstable; urgency=medium
+
+  * Team upload.
+  * Mark pytest to be test-only.
+
+ -- Bastian Germann <bage@debian.org>  Mon, 24 Mar 2025 07:38:07 +0100
+
+requests (2.32.3+dfsg-4) unstable; urgency=medium
+
+  * Team upload.
+  * Upload to unstable.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Feb 2025 13:10:15 +0000
+
+requests (2.32.3+dfsg-3) experimental; urgency=medium
+
+  * Team upload.
+  * Regenerate test certificates before running tests (closes: #1091503).
+  * Switch to autopkgtest-pkg-pybuild.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Feb 2025 12:50:27 +0000
+
+requests (2.32.3+dfsg-2) experimental; urgency=medium
+
+  * Team upload to experimental to generate more Pseudo-Excuse for urllib3.
+  * Set Rules-Requires-Root: no
+  * Use dh-sequence-python3
+
+ -- Alexandre Detiste <tchet@debian.org>  Sun, 24 Nov 2024 20:34:48 +0100
+
+requests (2.32.3+dfsg-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release:
+    - CVE-2024-35195: Fixed an issue where setting `verify=False` on the
+      first request from a Session will cause subsequent requests to the
+      _same origin_ to also ignore cert verification, regardless of the
+      value of `verify` (closes: #1071593).
+  * Use pybuild-plugin-pyproject.
+  * Standards-Version: 4.7.0 (no changes required).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jun 2024 11:53:38 +0100
+
+requests (2.31.0+dfsg-2) unstable; urgency=medium
+
+  * Team upload.
+  * Fix FTBFS with pytest 8 (Closes: #1063985)
+
+ -- Timo Röhling <roehling@debian.org>  Thu, 16 May 2024 17:28:11 +0200
+
+requests (2.31.0+dfsg-1) unstable; urgency=medium
+
+  [ Max-Julian Pogner ]
+  * Update upstream homepage, as the previous url would direct browsers
+    to a non-existant webserver.
+
+  [ Daniele Tricoli ]
+  * New upstream version 2.31.0+dfsg
+    - Fix CVE-2023-32681 (Closes: #1036693).
+  * Refresh 0001-Remove-remote-images-traking-code-and-ads.patch.
+  * Add a patch by Olivier Gayot (thanks Oliver!) to fix autopkgtest when
+    http_proxy, https_proxy or no_proxy is set. (Closes: #1011276).
+  * debian/control
+    - Bump standards version to 4.6.2, no changes needed.
+  * Skip tests: test_header_with_subclass_types and
+    test_urllib3_pool_connection_closed due connection error.
+  * debian/copyright
+    - Update copyright years.
+
+ -- Daniele Tricoli <eriol@debian.org>  Mon, 17 Jul 2023 18:31:20 +0200
+
 requests (2.28.1+dfsg-1) unstable; urgency=medium
 
   [ Lena Voytek ]
