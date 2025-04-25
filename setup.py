@@ -7,7 +7,7 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 7)
+REQUIRED_PYTHON = (3, 8)
 
 if CURRENT_PYTHON < REQUIRED_PYTHON:
     sys.stderr.write(
@@ -20,7 +20,7 @@ you're trying to install it on Python {}.{}. To resolve this,
 consider upgrading to a supported Python version.
 
 If you can't upgrade your Python version, you'll need to
-pin to an older version of Requests (<2.28).
+pin to an older version of Requests (<2.32.0).
 """.format(
             *(REQUIRED_PYTHON + CURRENT_PYTHON)
         )
@@ -59,13 +59,13 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 requires = [
-    "charset_normalizer>=2,<3",
+    "charset_normalizer>=2,<4",
     "idna>=2.5,<4",
-    "urllib3>=1.21.1,<1.27",
+    "urllib3>=1.21.1,<3",
     "certifi>=2017.4.17",
 ]
 test_requirements = [
-    "pytest-httpbin==0.0.7",
+    "pytest-httpbin==2.0.0",
     "pytest-cov",
     "pytest-mock",
     "pytest-xdist",
@@ -75,7 +75,7 @@ test_requirements = [
 
 about = {}
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, "requests", "__version__.py"), "r", "utf-8") as f:
+with open(os.path.join(here, "src", "requests", "__version__.py"), "r", "utf-8") as f:
     exec(f.read(), about)
 
 with open("README.md", "r", "utf-8") as f:
@@ -92,9 +92,9 @@ setup(
     url=about["__url__"],
     packages=["requests"],
     package_data={"": ["LICENSE", "NOTICE"]},
-    package_dir={"requests": "requests"},
+    package_dir={"": "src"},
     include_package_data=True,
-    python_requires=">=3.7, <4",
+    python_requires=">=3.8",
     install_requires=requires,
     license=about["__license__"],
     zip_safe=False,
@@ -107,11 +107,11 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
