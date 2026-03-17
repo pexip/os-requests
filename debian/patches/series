@@ -1,3 +1,4 @@
 0001-Remove-remote-images-traking-code-and-ads.patch
 0002-Fix-tests-with-HTTP-proxy.patch
 add-ca-constraint-to-test-ca.patch
+CVE-2024-47081.patch
